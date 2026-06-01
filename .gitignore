@@ -1,0 +1,21 @@
+# 🎨 印象派绘画分类器 Git 忽略文件
+
+# 数据集 (包含数千张高分辨率油画，体积大且涉及版权，严禁上传)
+Impressionist_Classifier_Data/
+
+# 训练出的模型权重 (文件体积较大且为二进制，不建议存入 git 版本库)
+model.pth
+
+# Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+
+# 开发环境与系统缓存
+.vscode/
+.idea/
+.gemini/
+.DS_Store
+Thumbs.db
