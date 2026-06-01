@@ -56,12 +56,3 @@ pip install torch torchvision scikit-learn numpy matplotlib
 python -m http.server 8011
 ```
 启动后在浏览器中输入 `http://127.0.0.1:8011/web/index.html` 即可畅爽体验。
-
----
-
-## 👤 制作人信息
-
-* **制作者**：2352842 张乾衡  
-* **院系专业**：设计创意学院 | 视觉传达设计-人工智能双学士学位  
-* **课程性质**：同济大学机器学习课程实践汇报成果  
-* **接收邮箱**：qkang@tongji.edu.cn
