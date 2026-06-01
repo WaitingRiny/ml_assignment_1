@@ -8,7 +8,7 @@
 
 ## 🔗 在线预览
 
-✨ **项目在线学术展厅**： [点击访问在线展示网页](https://<YOUR_GITHUB_USERNAME>.github.io/<YOUR_REPO_NAME>/web/index.html)  
+✨ **项目在线学术展厅**： [点击访问在线展示网页](https://waitingriny.github.io/ml_assignment_1/web/index.html)  
 *(请将链接中的 `<YOUR_GITHUB_USERNAME>` 和 `<YOUR_REPO_NAME>` 替换为您最终的 GitHub 用户名及仓库名称)*
 
 ---
