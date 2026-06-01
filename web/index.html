@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>印象派绘画分类器 - 个人课程报告与幻灯片展示</title>
+    
+    <!-- 引入 Google Fonts 高级艺术字体 (Cinzel + Outfit) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- 引入 FontAwesome 图标库 CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    
+    <!-- Prism.js 代码高亮 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 导航栏 -->
+    <header class="navbar">
+        <div class="logo"><i class="fa-solid fa-palette"></i> IMPRESSIONIST.AI</div>
+        <nav class="nav-links">
+            <a href="#hero" class="nav-item-link active">序幕</a>
+            <a href="#dataset" class="nav-item-link">数据</a>
+            <a href="#model" class="nav-item-link">算法</a>
+            <a href="#code" class="nav-item-link">实现</a>
+            <a href="#results" class="nav-item-link">实验</a>
+            <a href="#confusion" class="nav-item-link">矩阵</a>
+            <a href="#gradcam" class="nav-item-link">聚焦</a>
+            <a href="#reflection" class="nav-item-link">总结</a>
+    </header>
+
+    <!-- 主要内容容器 -->
+    <div id="content-container">
+
+        <!-- SECTION 1: 序幕：画布之上 -->
+        <section id="hero" class="slide-section" data-slide-index="0">
+            <div class="grid-overlay"></div>
+            <div class="hero-bg">
+                <!-- 独特碎片 1 & 2 -->
+                <div class="art-shard" style="background-image: url('assets/samples/VanGogh.jpg'); top: 12%; left: 6%;"></div>
+                <div class="art-shard" style="background-image: url('assets/samples/Monet.jpg'); bottom: 15%; right: 8%;"></div>
+            </div>
+            <div class="hero-content">
+                <p class="hero-subtitle">同济大学机器学习课程设计成果报告</p>
+                <h1 class="hero-title">画布之上的理性审判</h1>
+                <h2 class="hero-title-sub">基于深度残差神经网络的印象派绘画分类器</h2>
+                
+                <!-- 制作人信息 -->
+                <div class="author-badge">
+                    <i class="fa-solid fa-user-graduate"></i> 2352842 张乾衡 &nbsp;&bull;&nbsp; 设计创意学院 &nbsp;&bull;&nbsp; 视觉传达设计-人工智能双学士学位
+                </div>
+
+                <div class="meta-row">
+                    <span><i class="fa-solid fa-microchip"></i> 算法：从零构建卷积神经网络 (ImpressionistResNet)</span>
+                    <span><i class="fa-solid fa-code"></i> 技术栈：PyTorch + CUDA + GSAP</span>
+                </div>
+                <div class="scroll-indicator">
+                    <span>向下滚动以解析画作结构</span>
+                    <div class="arrow-down"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: 第一幕：解析结构 -->
+        <section id="dataset" class="slide-section" data-slide-index="1">
+            <div class="grid-overlay"></div>
+            <div class="hero-bg">
+                <!-- 独特碎片 3 & 4 -->
+                <div class="art-shard" style="background-image: url('assets/samples/Cezanne.jpg'); top: 25%; right: 5%;"></div>
+                <div class="art-shard" style="background-image: url('assets/samples/Degas.jpg'); bottom: 10%; left: 4%;"></div>
+            </div>
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-num">01</span>
+                    <h2>第一幕：解析结构</h2>
+                </div>
+                <div class="grid-2col">
+                    <div class="card dataset-card">
+                        <h3><i class="fa-solid fa-folder-tree"></i> 数据集结构模型</h3>
+                        <p class="card-intro">我采用 Kaggle 的印象派绘画数据集，共包含 10 个代表性流派画家的艺术作品：</p>
+                        
+                        <div class="directory-tree">
+                            <div class="tree-item root"><i class="fa-regular fa-folder-open"></i> Impressionist_Classifier_Data</div>
+                            <div class="tree-item branch"><i class="fa-regular fa-folder"></i> training (训练集: 10类, 每类约400张图像)</div>
+                            <div class="tree-item leaf"><i class="fa-regular fa-image"></i> Cezanne (塞尚), Degas (德加), Gauguin (高更)</div>
+                            <div class="tree-item leaf"><i class="fa-regular fa-image"></i> Monet (莫奈), VanGogh (梵高), Renoir (雷诺阿) ...</div>
+                            <div class="tree-item branch"><i class="fa-regular fa-folder"></i> validation (验证集: 10类, 每类约100张图像)</div>
+                            <div class="tree-item leaf"><i class="fa-regular fa-image"></i> 相同的10类分类结构</div>
+                        </div>
+
+                        <div class="stats-row">
+                            <div class="stat-box">
+                                <span class="stat-val">3,989</span>
+                                <span class="stat-lbl">训练图片</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-val">990</span>
+                                <span class="stat-lbl">验证图片</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-val">10</span>
+                                <span class="stat-lbl">分类数量</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card grid-samples">
+                        <h3><i class="fa-solid fa-paintbrush"></i> 10位大师的艺术指纹</h3>
+                        <div class="samples-grid" id="samples-container">
+                            <div class="sample-item">
+                                <div class="sample-img" style="background-image: url('assets/samples/Cezanne.jpg')"></div>
+                                <span>Cezanne</span>
+                            </div>
+                            <div class="sample-item">
+                                <div class="sample-img" style="background-image: url('assets/samples/Degas.jpg')"></div>
+                                <span>Degas</span>
+                            </div>
+                            <div class="sample-item">
+                                <div class="sample-img" style="background-image: url('assets/samples/Gauguin.jpg')"></div>
+                                <span>Gauguin</span>
+                            </div>
+                            <div class="sample-item">
+                                <div class="sample-img" style="background-image: url('assets/samples/Hassam.jpg')"></div>
+                                <span>Hassam</span>
+                            </div>
+                            <div class="sample-item">
+                                <div class="sample-img" style="background-image: url('assets/samples/Matisse.jpg')"></div>
+                                <span>Matisse</span>
+                            </div>
+                            <div class="sample-item">
+                                <div class="sample-img" style="background-image: url('assets/samples/Monet.jpg')"></div>
+                                <span>Monet</span>
+                            </div>
+                            <div class="sample-item">
+                                <div class="sample-img" style="background-image: url('assets/samples/Pissarro.jpg')"></div>
+                                <span>Pissarro</span>
+                            </div>
+                            <div class="sample-item">
+                                <div class="sample-img" style="background-image: url('assets/samples/Renoir.jpg')"></div>
+                                <span>Renoir</span>
+                            </div>
+                            <div class="sample-item">
+                                <div class="sample-img" style="background-image: url('assets/samples/Sargent.jpg')"></div>
+                                <span>Sargent</span>
+                            </div>
+                            <div class="sample-item">
+                                <div class="sample-img" style="background-image: url('assets/samples/VanGogh.jpg')"></div>
+                                <span>VanGogh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: 第二幕：画笔的数学 -->
+        <section id="model" class="slide-section" data-slide-index="2">
+            <div class="grid-overlay"></div>
+            <div class="hero-bg">
+                <!-- 独特碎片 5 -->
+                <div class="art-shard" style="background-image: url('assets/samples/Gauguin.jpg'); top: 15%; left: 8%;"></div>
+            </div>
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-num">02</span>
+                    <h2>第二幕：画笔的数学</h2>
+                </div>
+                <div class="grid-2col">
+                    <div class="card text-card">
+                        <h3>为什么是深度残差结构 (ResNet)？</h3>
+                        <p>传统卷积神经网络在加深层数时会遇到<strong>梯度消失或爆炸</strong>问题，导致模型性能退化。印象派画作的分类极度依赖于底层的“笔触纹理特征”与高层的“色彩光影构图”，这要求网络具有一定的深度。</p>
+                        <p>我自建的 <code>ImpressionistResNet</code> 引入了<strong>跳跃连接 (Shortcut Connection)</strong>，使输入可以直接跨越两层卷积传递：</p>
+                        
+                        <div class="formula-box">
+                            $$F(x) = \mathcal{H}(x) - x$$
+                            $$\text{Output} = \text{ReLU}(F(x, \{W_i\}) + W_s x)$$
+                        </div>
+                        
+                        <p>当网络退化时，优化器更容易学习到残差映射 \( F(x) = 0 \)，从而保证了深层网络至少不会弱于浅层网络，实现了平滑梯度流动与参数学习。</p>
+                    </div>
+                    
+                    <div class="card network-card">
+                        <h3><i class="fa-solid fa-network-wired"></i> 网络拓扑层级</h3>
+                        <div class="net-diagram">
+                            <div class="net-node stem">输入图像 (3 × 224 × 224)</div>
+                            <div class="net-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+                            <div class="net-node stem">初始卷积 7x7 Conv + BN + MaxPool (32 通道)</div>
+                            <div class="net-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+                            <div class="net-node stage1">Stage 1: 2 × Residual Block (64 通道)</div>
+                            <div class="net-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+                            <div class="net-node stage2">Stage 2: 2 × Residual Block (128 通道, 步长2)</div>
+                            <div class="net-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+                            <div class="net-node stage3">Stage 3: 2 × Residual Block (256 通道, 步长2)</div>
+                            <div class="net-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+                            <div class="net-node stage4">Stage 4: 2 × Residual Block (512 通道, 步长2)</div>
+                            <div class="net-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+                            <div class="net-node stem">全局自适应平均池化 Global AvgPool (512)</div>
+                            <div class="net-arrow"><i class="fa-solid fa-arrow-down-long"></i></div>
+                            <div class="net-node classifier">全连接分类层 Linear(512) -> Dropout(0.5) -> Linear(10)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: 第三幕：代码构建 -->
+        <section id="code" class="slide-section" data-slide-index="3">
+            <div class="grid-overlay"></div>
+            <div class="hero-bg">
+                <!-- 独特碎片 6 -->
+                <div class="art-shard" style="background-image: url('assets/samples/Hassam.jpg'); bottom: 20%; right: 6%;"></div>
+            </div>
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-num">03</span>
+                    <h2>第三幕：代码构建</h2>
+                </div>
+                <div class="grid-2col code-grid">
+                    <div class="card text-card code-left">
+                        <h3>自建网络与训练算法实现</h3>
+                        <p>为体现算法细节的掌控度，我没有借用任何 torchvision 的预训练结构，而是基于 PyTorch 实现了底层算法：</p>
+                        <ul>
+                            <li><strong>Module 结构</strong>：从残差块的跳跃连接、BatchNorm 匹配到动态下采样，均构建代码实现。</li>
+                            <li><strong>严谨的训练流程</strong>：使用 <code>AdamW</code> 优化器与权重衰减机制，抑制模型对有限画作的过拟合，并引入 <code>CosineAnnealingLR</code> 动态调整学习率。</li>
+                            <li><strong>数据增广管道</strong>：集成了旋转、随机缩放裁剪和色彩抖动，模拟由于博物馆光照或扫描偏差带来的画作差异。</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card code-card">
+                        <div class="code-header">
+                            <span><i class="fa-solid fa-file-code"></i> train.py - PyTorch Code</span>
+                            <span class="bullet-red"></span>
+                        </div>
+                        <div class="code-container">
+                            <pre><code class="language-python"># 核心残差块与Skip Connection实现
+class ResidualBlock(nn.Module):
+    def __init__(self, in_channels, out_channels, stride=1, downsample=None):
+        super(ResidualBlock, self).__init__()
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+        self.relu = nn.ReLU(inplace=True)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(out_channels)
+        self.downsample = downsample
+
+    def forward(self, x):
+        residual = x
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+        out = self.conv2(out)
+        out = self.bn2(out)
+        if self.downsample is not None:
+            residual = self.downsample(x)
+        out += residual
+        return self.relu(out)</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: 第四幕：训练过程 -->
+        <section id="results" class="slide-section" data-slide-index="4">
+            <div class="grid-overlay"></div>
+            <div class="hero-bg">
+                <!-- 独特碎片 7 -->
+                <div class="art-shard" style="background-image: url('assets/samples/Matisse.jpg'); top: 25%; right: 7%;"></div>
+            </div>
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-num">04</span>
+                    <h2>第四幕：训练过程</h2>
+                </div>
+                <div class="grid-2col">
+                    <div class="card chart-card">
+                        <h3><i class="fa-solid fa-chart-line"></i> 训练损失与准确率曲线</h3>
+                        <div class="chart-container">
+                            <canvas id="metrics-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card text-card">
+                        <h3>参数调优与收敛性分析</h3>
+                        <p>通过使用 15 个 Epoch 的余弦退火训练，网络展现出了稳定的收敛态势：</p>
+                        <ul>
+                            <li><strong>损失稳步回落</strong>：训练 Loss 从初始的 2.2010 持续下降至 <strong>1.5148</strong>，验证 Loss 也相应降至 <strong>1.5479</strong>。整个训练过程 Loss 曲线平滑下行，未出现梯度爆炸，证明残差结构成功稳定了多分类的梯度反向传播。</li>
+                            <li><strong>泛化能力跃升</strong>：在多重数据增强的保护下，验证集准确率（Val Acc）在 10 分类且无预训练的挑战性任务下，从 10% 随机基准稳步攀升并稳定在最高 <strong>45.25%</strong>（第 14 个 Epoch），展现出强劲的特征分类能力。</li>
+                            <li><strong>平滑收敛特征</strong>：余弦退火调度器在后半程拉小学习率，使验证集准确率在 12-15 Epoch 区间稳定在 43%-45% 之间，训练后期波动极其微小。</li>
+                        </ul>
+                        <div class="best-metric-box">
+                            <span class="lbl"><i class="fa-solid fa-trophy"></i> 最优验证准确率</span>
+                            <span class="val" id="best-accuracy-text">45.25%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: 第五幕：混淆矩阵 -->
+        <section id="confusion" class="slide-section" data-slide-index="5">
+            <div class="grid-overlay"></div>
+            <div class="hero-bg">
+                <!-- 独特碎片 8 -->
+                <div class="art-shard" style="background-image: url('assets/samples/Pissarro.jpg'); bottom: 12%; left: 5%;"></div>
+            </div>
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-num">05</span>
+                    <h2>第五幕：混淆矩阵</h2>
+                </div>
+                <div class="grid-2col-wide">
+                    <div class="card cm-card">
+                        <h3>十类画家分类关联混淆矩阵 (百分比)</h3>
+                        <div class="matrix-scroll">
+                            <div class="cm-grid" id="cm-grid-container">
+                                <!-- 由 JS 动态绘制的矩阵网格 -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card text-card">
+                        <h3>艺术风格交叉与混淆分析</h3>
+                        <p>混淆矩阵是反映分类器微观行为的一面镜子。通过分析我可以得到如下符合美术史学规律的“艺术风格关联”：</p>
+                        <ul>
+                            <li><strong>容易混淆的风格组合</strong>：
+                                <ul>
+                                    <li><strong>哈萨姆 (Hassam) vs 莫奈 (Monet)</strong>：分类器将多达 23 张哈萨姆作品误判为莫奈，同时莫奈也有 11 张被误判为哈萨姆。这非常合理，二者同属印象派，都采用极细碎的并置短笔触来捕捉波光粼粼的自然日光，在空间纹理上极其类似。</li>
+                                    <li><strong>德加 (Degas) vs 雷诺阿 (Renoir) / 萨金特 (Sargent)</strong>：德加的识别率仅为 <strong>14.1%</strong>，有 28 张被误判为雷诺阿，25 张被误判为萨金特。他们都擅长室内人物肖像及大面积肤色块面，分类器在此极易产生风格混淆，表明人物线条特征提取能力仍有提升空间。</li>
+                                </ul>
+                            </li>
+                            <li><strong>强分类特征表达</strong>：
+                                <ul>
+                                    <li><strong>雷诺阿 (Renoir, 67.7%)</strong> 与 <strong>马蒂斯 (Matisse, 65.7%)</strong> 的分类召回率最高。马蒂斯作品具有野兽派标志性的极高饱和度撞色平涂大色块，雷诺阿偏爱温暖偏红笔触，均具备极其独特的画面特征“指纹”，使分类器极易定位。</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 7: 第六幕：视觉焦点与艺术解读 -->
+        <section id="gradcam" class="slide-section" data-slide-index="6">
+            <div class="grid-overlay"></div>
+            <div class="hero-bg">
+                <!-- 独特碎片 9 -->
+                <div class="art-shard" style="background-image: url('assets/samples/Renoir.jpg'); top: 15%; right: 6%;"></div>
+            </div>
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-num">06</span>
+                    <h2>第六幕：视觉焦点与艺术解读</h2>
+                </div>
+                
+                <div class="gradcam-intro-card card">
+                    <h3><i class="fa-solid fa-eye"></i> 特征激活图 (Grad-CAM) 原理与大师画廊</h3>
+                    <p>为了探寻模型是如何区分不同画家的，我使用了 Grad-CAM 模型。它将模型最后的残差块对图像分类的贡献梯度作为权重对特征图进行加权融合：</p>
+                    <div class="formula-box-sm">
+                        \( L^c_{\text{Grad-CAM}} = \text{ReLU}\Big(\sum_k \alpha_k^c A^k\Big) \)
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        \( \alpha_k^c = \frac{1}{Z}\sum_i\sum_j \frac{\partial Y^c}{\partial A^k_{i,j}} \)
+                    </div>
+                    <p><strong>以下为 10 位画家的验证集画作对比图（每张图左侧为原画，右侧为热力图覆盖。红色代表模型在分类决策时最关注的‘视觉指纹’区域）：</strong></p>
+                </div>
+
+                <!-- 10张图平铺并排的画廊网格 (Gallery Grid) -->
+                <div class="gradcam-gallery-grid" id="gradcam-gallery">
+                    <!-- 卡片 1 (Cezanne) -->
+                    <div class="gallery-card card">
+                        <div class="gallery-img-box">
+                            <img src="assets/gradcam/Cezanne_gradcam.jpg" alt="Cezanne Grad-CAM">
+                        </div>
+                        <div class="gallery-info">
+                            <h4>Cezanne (塞尚)</h4>
+                            <p>模型关注点锁定在其画面独创的“色块几何体结构”（如静物的几何边缘与形体交线），符合塞尚将自然还原为几何形体的立体主义尝试。</p>
+                        </div>
+                    </div>
+                    <!-- 卡片 2 (Degas) -->
+                    <div class="gallery-card card">
+                        <div class="gallery-img-box">
+                            <img src="assets/gradcam/Degas_gradcam.jpg" alt="Degas Grad-CAM">
+                        </div>
+                        <div class="gallery-info">
+                            <h4>Degas (德加)</h4>
+                            <p>注意力热力图聚焦于芭蕾舞女裙摆的高光边缘以及强对比处的轮廓，这正是德加捕捉舞台瞬时动态与光影的精髓所在。</p>
+                        </div>
+                    </div>
+                    <!-- 卡片 3 (Gauguin) -->
+                    <div class="gallery-card card">
+                        <div class="gallery-img-box">
+                            <img src="assets/gradcam/Gauguin_gradcam.jpg" alt="Gauguin Grad-CAM">
+                        </div>
+                        <div class="gallery-info">
+                            <h4>Gauguin (高更)</h4>
+                            <p>模型倾向于捕捉画面里的“平涂大色块”与粗犷的强色调对比，切合了高更塔希提时期原始主义扁平化的面感特色。</p>
+                        </div>
+                    </div>
+                    <!-- 卡片 4 (Hassam) -->
+                    <div class="gallery-card card">
+                        <div class="gallery-img-box">
+                            <img src="assets/gradcam/Hassam_gradcam.jpg" alt="Hassam Grad-CAM">
+                        </div>
+                        <div class="gallery-info">
+                            <h4>Hassam (哈萨姆)</h4>
+                            <p>激活焦点主要分布在街道或波光粼粼的水面光斑上，体现出美国印象派对于斑驳、跳跃的细碎日光笔触的捕捉。</p>
+                        </div>
+                    </div>
+                    <!-- 卡片 5 (Matisse) -->
+                    <div class="gallery-card card">
+                        <div class="gallery-img-box">
+                            <img src="assets/gradcam/Matisse_gradcam.jpg" alt="Matisse Grad-CAM">
+                        </div>
+                        <div class="gallery-info">
+                            <h4>Matisse (马蒂斯)</h4>
+                            <p>模型高度集中于饱和纯色的撞色块面（如大红大绿）和野性的黑色边框勾勒线上，对形体细节做出了高度抽象简化。</p>
+                        </div>
+                    </div>
+                    <!-- 卡片 6 (Monet) -->
+                    <div class="gallery-card card">
+                        <div class="gallery-img-box">
+                            <img src="assets/gradcam/Monet_gradcam.jpg" alt="Monet Grad-CAM">
+                        </div>
+                        <div class="gallery-info">
+                            <h4>Monet (莫奈)</h4>
+                            <p>注意力热力图锁定了水池倒影里的闪烁色块以及睡莲的边缘光彩，说明模型捕捉到了莫奈经典的“光影斑驳色彩瞬间组合”笔触。</p>
+                        </div>
+                    </div>
+                    <!-- 卡片 7 (Pissarro) -->
+                    <div class="gallery-card card">
+                        <div class="gallery-img-box">
+                            <img src="assets/gradcam/Pissarro_gradcam.jpg" alt="Pissarro Grad-CAM">
+                        </div>
+                        <div class="gallery-info">
+                            <h4>Pissarro (毕沙罗)</h4>
+                            <p>模型关注点均匀散布在碎叶、林荫路面细小的颜色震荡和密集的颗粒描点上，证实了模型能提取出毕沙罗厚实密布的田园碎笔特征。</p>
+                        </div>
+                    </div>
+                    <!-- 卡片 8 (Renoir) -->
+                    <div class="gallery-card card">
+                        <div class="gallery-img-box">
+                            <img src="assets/gradcam/Renoir_gradcam.jpg" alt="Renoir Grad-CAM">
+                        </div>
+                        <div class="gallery-info">
+                            <h4>Renoir (雷诺阿)</h4>
+                            <p>焦点落在人物白皙丰润的脸颊和衣物边缘的暖色反光晕染带中，完美切合了雷诺阿偏爱柔焦人像与温暖偏红笔触的特点。</p>
+                        </div>
+                    </div>
+                    <!-- 卡片 9 (Sargent) -->
+                    <div class="gallery-card card">
+                        <div class="gallery-img-box">
+                            <img src="assets/gradcam/Sargent_gradcam.jpg" alt="Sargent Grad-CAM">
+                        </div>
+                        <div class="gallery-info">
+                            <h4>Sargent (萨金特)</h4>
+                            <p>红区聚焦于礼服丝绸闪耀的高亮反光和面部潇洒洗练的笔锋阴影上，表明模型抓取了萨金特高度精准的造型与强对比控制力。</p>
+                        </div>
+                    </div>
+                    <!-- 卡片 10 (VanGogh) -->
+                    <div class="gallery-card card">
+                        <div class="gallery-img-box">
+                            <img src="assets/gradcam/VanGogh_gradcam.jpg" alt="VanGogh Grad-CAM">
+                        </div>
+                        <div class="gallery-info">
+                            <h4>VanGogh (梵高)</h4>
+                            <p>关注焦点呈现出明显的带状漩涡分布，精确契合天空云彩和向日葵中旋转厚涂的笔触线条，成功捕捉了梵高标志性的螺旋指纹。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 8: 尾声：画布之外 -->
+        <section id="reflection" class="slide-section" data-slide-index="7">
+            <div class="grid-overlay"></div>
+            <div class="hero-bg">
+                <!-- 独特碎片 10 -->
+                <div class="art-shard" style="background-image: url('assets/samples/Sargent.jpg'); bottom: 18%; left: 8%;"></div>
+            </div>
+            <div class="section-container">
+                <div class="section-header">
+                    <span class="section-num">07</span>
+                    <h2>尾声：画布之外</h2>
+                </div>
+                <div class="grid-1col">
+                    <div class="card text-card reflection-full">
+                        <h3><i class="fa-solid fa-lightbulb"></i> 机器学习个人设计体会</h3>
+                        <p>在这项基于印象派绘画分类器的实践中，我最大的收获是对“算法可解释性”与“深度残差连接”的底层代码掌控。</p>
+                        <p>通过从零搭建 CNN 并且训练，我深刻领会到数据增强对于小样本数据集的生死重要性。如果不使用随机缩放与翻转，模型在第5个epoch之后就会陷入严重的过拟合。</p>
+                        <p>使用 Grad-CAM 的过程促使我查看公式，去真正理解卷积层中“通道”（Channels）其实对应于“不同的纹理提取器”。看到热力图精确落在梵高的旋涡云彩和莫奈的水中浮莲上时，我感受到了“数学的浪漫与人工智能的理性”。</p>
+                        <p>这次重构过程让我进一步领略到参数调优和工程细节的含金量。将原本暗黑的界面迭代为明亮艺术的浅米色暖砂风格，融合了视觉传达设计的网格理性与机器学习特征的可视化直觉。通过去除无用依赖与逻辑控制模块，使系统更加纯粹、专注于对学术研究成果的艺术呈现。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- MathJax 渲染 LaTeX 数学公式 -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- 动画库 GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- 绘图库 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Prism.js 代码高亮 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <script src="app.js"></script>
+</body>
+</html>
