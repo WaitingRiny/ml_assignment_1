@@ -2,7 +2,6 @@
 
 **制作人**：2352842 张乾衡 设计创意学院 视觉传达设计-人工智能双学士学位  
 **课程名称**： 机器学习课程实践  
-**报告主题**： 自建轻量级 ResNet 模型进行多分类任务与模型可解释性 Grad-CAM 分析  
 **在线访问**：https://waitingriny.github.io/ml_assignment_1/web/index.html
 
 ---
